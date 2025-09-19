@@ -8,7 +8,6 @@ javascript:(function(){
   const ctx = t.getContext('2d');
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  /*ctx.lineWidth = 4;*/
 
   function resizeCanvas(){
     t.width  = Math.floor(window.innerWidth * dpr);
@@ -18,8 +17,7 @@ javascript:(function(){
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  let drawing = false;
-  let last = {x:0,y:0};
+  let drawing = false, last = {x:0,y:0};
 
   function getPos(e){ return { x: e.clientX, y: e.clientY }; }
 
@@ -35,6 +33,7 @@ javascript:(function(){
     e.preventDefault();
     const p = getPos(e);
     ctx.strokeStyle = 'red';
+    ctx.lineWidth= 4;
     ctx.beginPath();
     ctx.moveTo(last.x, last.y);
     ctx.lineTo(p.x, p.y);
@@ -46,19 +45,15 @@ javascript:(function(){
     drawing = false;
     try{ t.releasePointerCapture(e.pointerId); } catch(_) {}
   });
-
-  t.addEventListener('pointercancel', ()=>{ drawing = false; });
-  
-function makeBtn(label,pos) {
+t.addEventListener('pointercancel', ()=>{ drawing = false; });
+function Btn(label,pos,fn) {
   const b = document.createElement('button');
   b.textContent = label;
-  b.style.cssText = "all:unset; color:#fff;padding:6px 12px;font-size:20px;border-radius:6px;cursor:pointer;position:fixed;bottom:0%;right:"+pos+";z-index:1000001;";
+  b.style.cssText = "all:unset !important;padding:6px 12px !important;font-size:20px !important;cursor:pointer !important;position:fixed !important;bottom:0% !important;right:"+pos+" !important;z-index:1000001 !important;background:#ffffff !important; color: #000 !important;border: 2px solid #000 !important";
+  b.onclick=fn;
   document.body.appendChild(b);
   return b;
 }
-
-const btnToggle = makeBtn('desenh','10%');
-const btnClear  = makeBtn('limpar','30%');
-btnToggle.onclick = ()=> { t.style.display = (t.style.display === 'none') ? 'block' : 'none'; };
-btnClear.onclick  = ()=> { ctx.clearRect(0,0,t.width,t.height); };
+Btn('desenh','10%',()=> { t.style.display = (t.style.display === 'none') ? 'block' : 'none'; });
+Btn('limpar','80%',()=> { ctx.clearRect(0,0,t.width,t.height);});
 })();
